@@ -15,7 +15,7 @@ ly = 512000.0
 
 #-------------------------------------------------------------------------------
 
-def create_grid(gridfileOut, dc):
+def create_grid_quad(gridfileOut, dc):
 
     mpas_tools_dir = os.environ['MPAS_TOOLS_DIR']
 
@@ -108,6 +108,55 @@ def create_grid(gridfileOut, dc):
     fileGrid.close()
 
     os.system("%s/mesh_tools/mesh_conversion_tools/MpasMeshConverter.x grid_in.nc %s" %(mpas_tools_dir,gridfileOut))
+
+#-------------------------------------------------------------------------------
+
+def create_grid_hex(gridfileOut, dc):
+
+    mpas_tools_dir = os.environ['MPAS_TOOLS_DIR']
+
+    dx = dc
+    dy = dc * math.sqrt(0.75)
+
+    nx = int(lx / dx)
+    if (nx % 2 != 0):
+        nx += 1
+    ny = int(ly / dy)
+    if (ny % 2 != 0):
+        ny += 1
+
+    fileout = open("namelist.input","w")
+
+    line = "&periodic_grid\n"
+    fileout.write(line)
+
+    line = "   nx = %i,\n" %(nx+2)
+    fileout.write(line)
+
+    line = "   ny = %i,\n" %(ny+2)
+    fileout.write(line)
+
+    line = "   dc = %f,\n" %(dc)
+    fileout.write(line)
+
+    line = "   nVertLevels = 1,\n"
+    fileout.write(line)
+
+    line = "   nTracers = 1,\n"
+    fileout.write(line)
+
+    line = "   nproc = 1,\n"
+    fileout.write(line)
+
+    line = "/\n"
+    fileout.write(line)
+
+    fileout.close()
+
+    os.system("rm grid.nc")
+    os.system("%s/mesh_tools/periodic_hex/periodic_grid" %(mpas_tools_dir))
+    os.system("python %s/mesh_tools/periodic_hex/mark_periodic_boundaries_for_culling.py -f grid.nc" %(mpas_tools_dir))
+    os.system("%s/mesh_tools/mesh_conversion_tools/MpasCellCuller.x grid.nc %s" %(mpas_tools_dir,gridfileOut))
 
 #-------------------------------------------------------------------------------
 
@@ -361,17 +410,29 @@ def create_ic(gridFilename, icFilename):
 
 def make_testcase():
 
-    create_grid("grid_moving_cyclone_8km.nc", 8000.0)
-    create_grid("grid_moving_cyclone_4km.nc", 4000.0)
-    create_grid("grid_moving_cyclone_2km.nc", 2000.0)
+    create_grid_quad("grid_moving_cyclone_quad_8km.nc", 8000.0)
+    create_grid_quad("grid_moving_cyclone_quad_4km.nc", 4000.0)
+    create_grid_quad("grid_moving_cyclone_quad_2km.nc", 2000.0)
 
-    create_forcing("grid_moving_cyclone_8km.nc", "forcing_moving_cyclone_8km.nc", "forcing_moving_cyclone_8km.png")
-    create_forcing("grid_moving_cyclone_4km.nc", "forcing_moving_cyclone_4km.nc", "forcing_moving_cyclone_4km.png")
-    create_forcing("grid_moving_cyclone_2km.nc", "forcing_moving_cyclone_2km.nc", "forcing_moving_cyclone_2km.png")
+    create_forcing("grid_moving_cyclone_quad_8km.nc", "forcing_moving_cyclone_quad_8km.nc", "forcing_moving_cyclone_quad_8km.png")
+    create_forcing("grid_moving_cyclone_quad_4km.nc", "forcing_moving_cyclone_quad_4km.nc", "forcing_moving_cyclone_quad_4km.png")
+    create_forcing("grid_moving_cyclone_quad_2km.nc", "forcing_moving_cyclone_quad_2km.nc", "forcing_moving_cyclone_quad_2km.png")
 
-    create_ic("grid_moving_cyclone_8km.nc", "ic_moving_cyclone_8km.nc")
-    create_ic("grid_moving_cyclone_4km.nc", "ic_moving_cyclone_4km.nc")
-    create_ic("grid_moving_cyclone_2km.nc", "ic_moving_cyclone_2km.nc")
+    create_ic("grid_moving_cyclone_quad_8km.nc", "ic_moving_cyclone_quad_8km.nc")
+    create_ic("grid_moving_cyclone_quad_4km.nc", "ic_moving_cyclone_quad_4km.nc")
+    create_ic("grid_moving_cyclone_quad_2km.nc", "ic_moving_cyclone_quad_2km.nc")
+
+    create_grid_hex("grid_moving_cyclone_hex_8km.nc", 8000.0)
+    create_grid_hex("grid_moving_cyclone_hex_4km.nc", 4000.0)
+    create_grid_hex("grid_moving_cyclone_hex_2km.nc", 2000.0)
+
+    create_forcing("grid_moving_cyclone_hex_8km.nc", "forcing_moving_cyclone_hex_8km.nc", "forcing_moving_cyclone_hex_8km.png")
+    create_forcing("grid_moving_cyclone_hex_4km.nc", "forcing_moving_cyclone_hex_4km.nc", "forcing_moving_cyclone_hex_4km.png")
+    create_forcing("grid_moving_cyclone_hex_2km.nc", "forcing_moving_cyclone_hex_2km.nc", "forcing_moving_cyclone_hex_2km.png")
+
+    create_ic("grid_moving_cyclone_hex_8km.nc", "ic_moving_cyclone_hex_8km.nc")
+    create_ic("grid_moving_cyclone_hex_4km.nc", "ic_moving_cyclone_hex_4km.nc")
+    create_ic("grid_moving_cyclone_hex_2km.nc", "ic_moving_cyclone_hex_2km.nc")
 
 #-------------------------------------------------------------------------------
 

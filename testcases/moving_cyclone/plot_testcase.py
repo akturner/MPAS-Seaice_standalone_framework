@@ -10,9 +10,9 @@ import cmocean
 
 #-------------------------------------------------------------------------------
 
-def plot_testcase():
+def plot_testcase(gridType,resolution):
 
-    filenameIn = "output_4km/output.0001.nc"
+    filenameIn = "output_%s_%s/output.0001.nc" %(gridType,resolution)
     fileIn = Dataset(filenameIn,"r")
 
     nCells = len(fileIn.dimensions["nCells"])
@@ -170,10 +170,17 @@ def plot_testcase():
     axes[1,1].set_ylabel("y (km)")
 
     plt.tight_layout()
-    plt.savefig("moving_cyclone.png",dpi=300)
+    plt.savefig("moving_cyclone_%s_%s.png" %(gridType,resolution),dpi=300)
 
 #-------------------------------------------------------------------------------
 
 if __name__ == "__main__":
 
-    plot_testcase()
+    parser = argparse.ArgumentParser(description='')
+
+    parser.add_argument('-m', dest='gridType', choices=["quad","hex"], help='')
+    parser.add_argument('-r', dest='resolution', choices=["2km","4km","8km"], help='')
+
+    args = parser.parse_args()
+
+    plot_testcase(args.gridType,args.resolution)

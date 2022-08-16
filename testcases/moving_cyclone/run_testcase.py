@@ -6,4 +6,5 @@ make_testcase()
 
 run_model()
 
-plot_testcase()
+plot_testcase("quad","4km")
+plot_testcase("hex","4km")

@@ -9,25 +9,30 @@ def run_model():
     if (MPAS_SEAICE_TESTCASES_RUN_COMMAND is None):
         MPAS_SEAICE_TESTCASES_RUN_COMMAND = ""
 
+    gridTypes = ["quad","hex"]
     resolutions = ["4km"]
 
-    for resolution in resolutions:
+    for gridType in gridTypes:
 
-        print("Resolution: ", resolution)
+        print("gridType: ", gridType)
 
-        os.system("rm -rf output_%s" %(resolution))
+        for resolution in resolutions:
 
-        os.system("rm grid.nc")
-        os.system("rm forcing.nc")
-        os.system("rm ic.nc")
+            print("  Resolution: ", resolution)
 
-        os.system("ln -s grid_moving_cyclone_%s.nc grid.nc" %(resolution))
-        os.system("ln -s forcing_moving_cyclone_%s.nc forcing.nc" %(resolution))
-        os.system("ln -s ic_moving_cyclone_%s.nc ic.nc" %(resolution))
+            os.system("rm -rf output_%s_%s" %(gridType, resolution))
 
-        os.system("%s %s" %(MPAS_SEAICE_TESTCASES_RUN_COMMAND, MPAS_SEAICE_EXECUTABLE))
+            os.system("rm grid.nc")
+            os.system("rm forcing.nc")
+            os.system("rm ic.nc")
 
-        os.system("mv output output_%s" %(resolution))
+            os.system("ln -s grid_moving_cyclone_%s_%s.nc grid.nc" %(gridType,resolution))
+            os.system("ln -s forcing_moving_cyclone_%s_%s.nc forcing.nc" %(gridType,resolution))
+            os.system("ln -s ic_moving_cyclone_%s_%s.nc ic.nc" %(gridType,resolution))
+
+            os.system("%s %s" %(MPAS_SEAICE_TESTCASES_RUN_COMMAND, MPAS_SEAICE_EXECUTABLE))
+
+            os.system("mv output output_%s_%s" %(gridType,resolution))
 
 #-------------------------------------------------------------------------------
 
