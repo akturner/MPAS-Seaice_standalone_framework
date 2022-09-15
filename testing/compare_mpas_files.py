@@ -16,12 +16,18 @@ def add_variable_to_diag_file(file1,variableArray1,variableArray2,variableName):
         fileDiag = Dataset(filenameDiag,"a")
 
     varIn = file1[variableName]
-    for dimension in varIn.dimensions:
-        if (dimension not in fileDiag.dimensions):
-            fileDiag.createDimension(dimension,len(file1.dimensions[dimension]))
+    if (varIn.datatype == np.dtype('S1')):
 
-    varOut = fileDiag.createVariable(varIn.name, varIn.dtype, varIn.dimensions)
-    varOut[:] = variableArray2[:] - variableArray1[:]
+        fileDiag.variableName = "Different"
+
+    else:
+
+        for dimension in varIn.dimensions:
+            if (dimension not in fileDiag.dimensions):
+                fileDiag.createDimension(dimension,len(file1.dimensions[dimension]))
+
+        varOut = fileDiag.createVariable(varIn.name, varIn.dtype, varIn.dimensions)
+        varOut[:] = variableArray2[:] - variableArray1[:]
 
     fileDiag.close()
 
