@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 
 def plot_testcase():
 
+    filein = Dataset("./output/output.2000.nc","r")
+
     cm = 1/2.54  # centimeters in inches
     plt.rc('font', family="Times New Roman")
     plt.rc('mathtext',fontset="stix")
@@ -21,14 +23,7 @@ def plot_testcase():
 
     fig, axis = plt.subplots(figsize=(8*cm,7*cm))
 
-    filein = Dataset("./output/output.2000.nc","r")
-
-    iceAreaCell = filein.variables["iceAreaCell"][:]
-    iceVolumeCell = filein.variables["iceVolumeCell"][:]
-    snowVolumeCell = filein.variables["snowVolumeCell"][:]
     surfaceTemperatureCell = filein.variables["surfaceTemperatureCell"][:]
-
-    filein.close()
 
     axis.plot(surfaceTemperatureCell,color="green")
     axis.set_ylabel("Temperature (C)")
@@ -39,14 +34,73 @@ def plot_testcase():
 
     axis2 = axis.twinx()
 
+    iceVolumeCell = filein.variables["iceVolumeCell"][:]
+    snowVolumeCell = filein.variables["snowVolumeCell"][:]
+
     axis2.plot(iceVolumeCell,color="red")
     axis2.plot(snowVolumeCell,color="blue")
     axis2.set_ylabel("Thickness (m)")
     axis2.set_ylim(0,None)
 
     plt.tight_layout()
-    plt.savefig("single_cell.eps")
-    plt.savefig("single_cell.png",dpi=300)
+    plt.savefig("single_cell_thickness.eps")
+    plt.savefig("single_cell_thickness.png",dpi=300)
+    plt.cla()
+    plt.close(fig)
+
+    fig, axis = plt.subplots(figsize=(8*cm,7*cm))
+
+    shortwaveDown = filein.variables["shortwaveDown"][:]
+    longwaveDown = filein.variables["longwaveDown"][:]
+    shortwaveVisibleDirectDown = filein.variables["shortwaveVisibleDirectDown"][:]
+    shortwaveVisibleDiffuseDown = filein.variables["shortwaveVisibleDiffuseDown"][:]
+    shortwaveIRDirectDown = filein.variables["shortwaveIRDirectDown"][:]
+    shortwaveIRDiffuseDown = filein.variables["shortwaveIRDiffuseDown"][:]
+
+    axis.plot(shortwaveDown, label="shortwaveDown", lw=0.2)
+    axis.plot(longwaveDown, label="longwaveDown", lw=0.2)
+    axis.plot(shortwaveVisibleDirectDown, label="shortwaveVisibleDirectDown", lw=0.2)
+    axis.plot(shortwaveVisibleDiffuseDown, label="shortwaveVisibleDiffuseDown", lw=0.2)
+    axis.plot(shortwaveIRDirectDown, label="shortwaveIRDirectDown", lw=0.2)
+    axis.plot(shortwaveIRDiffuseDown, label="shortwaveIRDiffuseDown", lw=0.2)
+
+    axis.set_ylabel("Flux (W/m2)")
+    axis.legend()
+
+    plt.tight_layout()
+    plt.savefig("single_cell_shortwave_flux.eps")
+    plt.savefig("single_cell_shortwave_flux.png",dpi=300)
+    plt.cla()
+    plt.close(fig)
+
+    fig, axis = plt.subplots(figsize=(8*cm,7*cm))
+
+    albedoVisibleDirectCell = filein.variables["albedoVisibleDirectCell"][:]
+    albedoVisibleDiffuseCell = filein.variables["albedoVisibleDiffuseCell"][:]
+    albedoIRDirectCell = filein.variables["albedoIRDirectCell"][:]
+    albedoIRDiffuseCell = filein.variables["albedoIRDiffuseCell"][:]
+    bareIceAlbedoCell = filein.variables["bareIceAlbedoCell"][:]
+    snowAlbedoCell = filein.variables["snowAlbedoCell"][:]
+    pondAlbedoCell = filein.variables["pondAlbedoCell"][:]
+
+    axis.plot(albedoVisibleDirectCell, label="albedoVisibleDirectCell", lw=0.2)
+    axis.plot(albedoVisibleDiffuseCell, label="albedoVisibleDiffuseCell", lw=0.2)
+    axis.plot(albedoIRDirectCell, label="albedoIRDirectCell", lw=0.2)
+    axis.plot(albedoIRDiffuseCell, label="albedoIRDiffuseCell", lw=0.2)
+    axis.plot(bareIceAlbedoCell, label="bareIceAlbedoCell", lw=0.2)
+    axis.plot(snowAlbedoCell, label="snowAlbedoCell", lw=0.2)
+    axis.plot(pondAlbedoCell, label="pondAlbedoCell", lw=0.2)
+
+    axis.set_ylabel("Albedo")
+    axis.legend()
+
+    plt.tight_layout()
+    plt.savefig("single_cell_albedo.eps")
+    plt.savefig("single_cell_albedo.png",dpi=300)
+    plt.cla()
+    plt.close(fig)
+
+    filein.close()
 
 #-------------------------------------------------------------------------------
 

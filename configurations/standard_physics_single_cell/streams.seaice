@@ -31,7 +31,25 @@
 	<var name="surfaceTemperatureCell"/>
 	<var name="shortwaveDown"/>
 	<var name="longwaveDown"/>
-
+	<var name="shortwaveVisibleDirectDown"/>
+	<var name="shortwaveVisibleDiffuseDown"/>
+	<var name="shortwaveIRDirectDown"/>
+	<var name="shortwaveIRDiffuseDown"/>
+	<var name="albedoVisibleDirectCell"/>
+	<var name="albedoVisibleDiffuseCell"/>
+	<var name="albedoIRDirectCell"/>
+	<var name="albedoIRDiffuseCell"/>
+	<var name="surfaceShortwaveFlux"/>
+	<var name="interiorShortwaveFlux"/>
+	<var name="penetratingShortwaveFlux"/>
+	<var name="penetratingShortwaveFluxVisibleDirect"/>
+	<var name="penetratingShortwaveFluxVisibleDiffuse"/>
+	<var name="penetratingShortwaveFluxIRDirect"/>
+	<var name="penetratingShortwaveFluxIRDiffuse"/>
+	<var name="bareIceAlbedoCell"/>
+	<var name="snowAlbedoCell"/>
+	<var name="pondAlbedoCell"/>
+	<var name="effectivePondAreaCell"/>
 </stream>
 
 <immutable_stream name="LYqSixHourlyForcing"
