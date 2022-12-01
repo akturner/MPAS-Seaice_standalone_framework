@@ -3,13 +3,13 @@
     config_calendar_type = 'noleap'
     config_start_time = '2000-01-01_00:00:00'
     config_stop_time = 'none'
-    config_run_duration = '120_00:00:00'
+    config_run_duration = '01-00-00_00:00:00'
     config_num_halos = 2
 /
 &io
     config_pio_num_iotasks = 0
     config_pio_stride = 1
-    config_write_output_on_startup = true
+    config_write_output_on_startup = false
     config_test_case_diag = false
     config_test_case_diag_type = 'none'
     config_full_abort_write = true
@@ -34,19 +34,19 @@
     config_do_restart_snow_grain_radius = false
 /
 &dimensions
-    config_nCategories = 1
+    config_nCategories = 5
     config_nIceLayers = 7
     config_nSnowLayers = 1
 /
 &initialize
     config_earth_radius = 6371229.0
-    config_initial_condition_type = 'none'
+    config_initial_condition_type = 'ridging'
     config_initial_ice_area = 1.0
     config_initial_ice_volume = 1.0
     config_initial_snow_volume = 0.0
     config_initial_latitude_north = 70.0
     config_initial_latitude_south = -60.0
-    config_initial_velocity_type = 'none'
+    config_initial_velocity_type = 'uniform'
     config_initial_uvelocity = 0.0
     config_initial_vvelocity = 0.0
     config_calculate_coriolis = true
@@ -54,9 +54,9 @@
 &use_sections
     config_use_dynamics = true
     config_use_velocity_solver = false
-    config_use_advection = true
-    config_use_forcing = false
-    config_use_column_package = false
+    config_use_advection = false
+    config_use_forcing = true
+    config_use_column_package = true
     config_use_prescribed_ice = false
     config_use_prescribed_ice_forcing = false
 /
@@ -76,7 +76,7 @@
 /
 &velocity_solver
     config_dynamics_subcycle_number = 1
-    config_rotate_cartesian_grid = false
+    config_rotate_cartesian_grid = true
     config_include_metric_terms = true
     config_elastic_subcycle_number = 120
     config_strain_scheme = 'variational'
@@ -86,6 +86,7 @@
     config_variational_denominator_type = 'original'
     config_wachspress_integration_type = 'dunavant'
     config_wachspress_integration_order = 8
+    config_average_variational_strain = false
     config_calc_velocity_masks = true
     config_use_air_stress = true
     config_use_ocean_stress = true
@@ -103,10 +104,10 @@
     config_recover_tracer_means_check = false
 /
 &column_package
-    config_use_column_shortwave = true
-    config_use_column_vertical_thermodynamics = true
+    config_use_column_shortwave = false
+    config_use_column_vertical_thermodynamics = false
     config_use_column_biogeochemistry = false
-    config_use_column_itd_thermodynamics = true
+    config_use_column_itd_thermodynamics = false
     config_use_column_ridging = true
     config_use_column_snow_tracers = false
 /
@@ -324,7 +325,7 @@
     config_ridging_redistribution_function = 'exponential'
     config_ridiging_efolding_scale = 3.0
     config_ratio_ridging_work_to_PE = 17.0
-    config_use_ridge_forcing = false
+    config_use_ridge_forcing = true
 /
 &atmosphere
     config_atmos_boundary_method = 'ccsm3'
@@ -354,7 +355,7 @@
     config_AM_highFrequencyOutput_write_on_startup = true
 /
 &AM_temperatures
-    config_AM_temperatures_enable = false
+    config_AM_temperatures_enable = true
     config_AM_temperatures_compute_interval = 'dt'
     config_AM_temperatures_output_stream = 'none'
     config_AM_temperatures_compute_on_startup = false
@@ -428,7 +429,7 @@
     config_AM_pondDiagnostics_write_on_startup = false
 /
 &AM_unitConversion
-    config_AM_unitConversion_enable = false
+    config_AM_unitConversion_enable = true
     config_AM_unitConversion_compute_interval = 'dt'
     config_AM_unitConversion_output_stream = 'none'
     config_AM_unitConversion_compute_on_startup = false
@@ -470,7 +471,7 @@
     config_AM_timeSeriesStatsDaily_backward_output_offset = '00-00-01_00:00:00'
 /
 &AM_timeSeriesStatsMonthly
-    config_AM_timeSeriesStatsMonthly_enable = false
+    config_AM_timeSeriesStatsMonthly_enable = true
     config_AM_timeSeriesStatsMonthly_compute_on_startup = false
     config_AM_timeSeriesStatsMonthly_write_on_startup = false
     config_AM_timeSeriesStatsMonthly_compute_interval = 'dt'

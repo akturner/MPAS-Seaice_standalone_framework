@@ -9,36 +9,15 @@
                   filename_interval="none"
                   input_interval="initial_only" />
 
-<stream name="initialConditions"
-        type="input"
-        filename_template="ic.nc"
-        filename_interval="none"
-        input_interval="initial_only">
-
-        <var name="uAirVelocity"/>
-        <var name="vAirVelocity"/>
-</stream>
-
 <stream name="itd"
         type="input"
-        filename_template="itd.nc"
+        filename_template="forcing/itd.nc"
         filename_interval="none"
         input_interval="initial_only">
 
-        <var name="categoryThicknessLimits"/>
-        <var name="initialCategoryIceArea"/>
-</stream>
-
-<stream name="specialBoundaries"
-        type="input"
-        filename_template="special_boundaries.nc"
-        filename_interval="none"
-        input_interval="initial_only">
-
-	<var name="vertexBoundaryType"/>
-	<var name="vertexBoundarySource"/>
-	<var name="tracerBoundaryType"/>
-	<var name="tracerBoundarySource"/>
+	<var name="categoryThicknessLimits"/>
+	<var name="initialCategoryIceArea"/>
+        <var name="surfaceTemperature"/>
 </stream>
 
 <immutable_stream name="restart"
@@ -53,17 +32,18 @@
         filename_template="output/output.$Y.nc"
         filename_interval="01-00-00_00:00:00"
         clobber_mode="replace_files"
-        output_interval="00-00-00_00:05:00" >
+        output_interval="00-00-00_01:00:00" >
 	<var name="xtime"/>
 	<var name="daysSinceStartOfSim"/>
-	<stream name="mesh"/>
 	<var name="iceAreaCell"/>
 	<var name="iceVolumeCell"/>
+	<var name="snowVolumeCell"/>
 	<var name="iceAreaCategory"/>
 	<var name="iceVolumeCategory"/>
-	<var name="icePressure"/>
-	<var name="uVelocity"/>
-	<var name="vVelocity"/>
+        <var name="ridgeConvergence"/>
+        <var name="ridgeShear"/>
+        <var name="iceTemperature"/>
+        <var name="surfaceTemperature"/>
 </stream>
 
 <immutable_stream name="LYqSixHourlyForcing"
@@ -88,6 +68,12 @@
 <immutable_stream name="NCARMonthlyForcing"
                   type="input"
                   filename_template="forcing/ocean_forcing_monthly.nc"
+                  filename_interval="none"
+                  input_interval="none" />
+
+<immutable_stream name="ridgingForcing"
+                  type="input"
+                  filename_template="forcing/ridging_forcing.nc"
                   filename_interval="none"
                   input_interval="none" />
 
