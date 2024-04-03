@@ -43,6 +43,87 @@ def create_scrip_grid_file(filenameScrip, nGridSize, nGridCorners, gridRank, gri
 
 #-------------------------------------------------------------------------------
 
+def create_T62_remap_file(filenameScrip, title, filenameT62, latVarName="LAT", lonVarName="LON"):
+
+    nLat = 94
+    nLon = 192
+
+    fileT62 = Dataset(filenameT62,"r")
+
+    LATin = fileT62.variables[latVarName][:]
+    LONin = fileT62.variables[lonVarName][:]
+
+    fileT62.close()
+
+    LAT = np.zeros(nLat+2)
+    LON = np.zeros(nLon+2)
+
+    LAT[1:-1] = LATin[:]
+    LON[1:-1] = LONin[:]
+
+    # center
+    latCenter = np.zeros((nLat,nLon))
+    lonCenter = np.zeros((nLat,nLon))
+
+    for iLon in range(0,nLon):
+       latCenter[:,iLon] = LATin[:]
+
+    for iLat in range(0,nLat):
+       lonCenter[iLat,:] = LONin[:]
+
+    latCenter = np.radians(latCenter)
+    lonCenter = np.radians(lonCenter)
+
+    # corners
+    latCorner = np.zeros((nLat,nLon,4))
+    lonCorner = np.zeros((nLat,nLon,4))
+
+    for iLon in range(0,nLon):
+
+        iLon2 = iLon + 1
+
+        lonCorner[:,iLon,0] = 0.5 * (LON[iLon2] + LON[iLon2-1])
+        lonCorner[:,iLon,1] = 0.5 * (LON[iLon2] + LON[iLon2+1])
+        lonCorner[:,iLon,2] = 0.5 * (LON[iLon2] + LON[iLon2+1])
+        lonCorner[:,iLon,3] = 0.5 * (LON[iLon2] + LON[iLon2-1])
+
+    lonCorner = (np.where(lonCorner < 0.0, lonCorner + 360.0, lonCorner))
+    lonCorner = np.radians(lonCorner)
+
+    for iLat in range(0,nLat):
+
+        iLat2 = iLat + 1
+
+        latCorner[iLat,:,0] = 0.5 * (LAT[iLat2] + LAT[iLat2-1])
+        latCorner[iLat,:,1] = 0.5 * (LAT[iLat2] + LAT[iLat2-1])
+        latCorner[iLat,:,2] = 0.5 * (LAT[iLat2] + LAT[iLat2+1])
+        latCorner[iLat,:,3] = 0.5 * (LAT[iLat2] + LAT[iLat2+1])
+
+    latCorner = np.radians(latCorner)
+
+    # create file
+    nGridSize = nLat * nLon
+    nGridCorners = 4
+    gridRank = 2
+    gridDims = np.array([nLon,nLat])
+    gridImask = np.ones(nGridSize,dtype="i")
+
+    latCornerScrip = np.zeros((nLat*nLon,4))
+    lonCornerScrip = np.zeros((nLat*nLon,4))
+
+    for iLat in range(0,nLat):
+        for iLon in range(0,nLon):
+            for iCorner in range(0,4):
+                ij = iLat * nLon + iLon
+                latCornerScrip[ij,iCorner] = latCorner[iLat,iLon,iCorner]
+                lonCornerScrip[ij,iCorner] = lonCorner[iLat,iLon,iCorner]
+
+    create_scrip_grid_file(filenameScrip, nGridSize, nGridCorners, gridRank, gridDims, latCenter.flatten(), lonCenter.flatten(), gridImask, latCornerScrip, lonCornerScrip, title)
+
+    return nGridSize
+
+#-------------------------------------------------------------------------------
+
 def get_mpas_grid_info(filenameMPASGrid):
 
     fileGrid = Dataset(filenameMPASGrid,"r")

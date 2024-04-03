@@ -7,90 +7,7 @@ import subprocess
 import sys
 import glob
 import configparser
-from create_forcing import create_scrip_grid_file, get_mpas_grid_info, create_scrip_file_MPAS, write_scrip_in_file, create_output_times, get_remapping_data
-
-#-------------------------------------------------------------------------------
-
-def create_T62_remap_file(filenameScrip, title, dataDirSixHourly):
-
-    nLat = 94
-    nLon = 192
-
-    filenames = sorted(glob.glob(dataDirSixHourly+"/t_10/t_10.*.nc"))
-    filenameT62 = filenames[0]
-    fileT62 = Dataset(filenameT62,"r")
-
-    LATin = fileT62.variables["LAT"][:]
-    LONin = fileT62.variables["LON"][:]
-
-    fileT62.close()
-
-    LAT = np.zeros(nLat+2)
-    LON = np.zeros(nLon+2)
-
-    LAT[1:-1] = LATin[:]
-    LON[1:-1] = LONin[:]
-
-    # center
-    latCenter = np.zeros((nLat,nLon))
-    lonCenter = np.zeros((nLat,nLon))
-
-    for iLon in range(0,nLon):
-       latCenter[:,iLon] = LATin[:]
-
-    for iLat in range(0,nLat):
-       lonCenter[iLat,:] = LONin[:]
-
-    latCenter = np.radians(latCenter)
-    lonCenter = np.radians(lonCenter)
-
-    # corners
-    latCorner = np.zeros((nLat,nLon,4))
-    lonCorner = np.zeros((nLat,nLon,4))
-
-    for iLon in range(0,nLon):
-
-        iLon2 = iLon + 1
-
-        lonCorner[:,iLon,0] = 0.5 * (LON[iLon2] + LON[iLon2-1])
-        lonCorner[:,iLon,1] = 0.5 * (LON[iLon2] + LON[iLon2+1])
-        lonCorner[:,iLon,2] = 0.5 * (LON[iLon2] + LON[iLon2+1])
-        lonCorner[:,iLon,3] = 0.5 * (LON[iLon2] + LON[iLon2-1])
-
-    lonCorner = (np.where(lonCorner < 0.0, lonCorner + 360.0, lonCorner))
-    lonCorner = np.radians(lonCorner)
-
-    for iLat in range(0,nLat):
-
-        iLat2 = iLat + 1
-
-        latCorner[iLat,:,0] = 0.5 * (LAT[iLat2] + LAT[iLat2-1])
-        latCorner[iLat,:,1] = 0.5 * (LAT[iLat2] + LAT[iLat2-1])
-        latCorner[iLat,:,2] = 0.5 * (LAT[iLat2] + LAT[iLat2+1])
-        latCorner[iLat,:,3] = 0.5 * (LAT[iLat2] + LAT[iLat2+1])
-
-    latCorner = np.radians(latCorner)
-
-    # create file
-    nGridSize = nLat * nLon
-    nGridCorners = 4
-    gridRank = 2
-    gridDims = np.array([nLon,nLat])
-    gridImask = np.ones(nGridSize,dtype="i")
-
-    latCornerScrip = np.zeros((nLat*nLon,4))
-    lonCornerScrip = np.zeros((nLat*nLon,4))
-
-    for iLat in range(0,nLat):
-        for iLon in range(0,nLon):
-            for iCorner in range(0,4):
-                ij = iLat * nLon + iLon
-                latCornerScrip[ij,iCorner] = latCorner[iLat,iLon,iCorner]
-                lonCornerScrip[ij,iCorner] = lonCorner[iLat,iLon,iCorner]
-
-    create_scrip_grid_file(filenameScrip, nGridSize, nGridCorners, gridRank, gridDims, latCenter.flatten(), lonCenter.flatten(), gridImask, latCornerScrip, lonCornerScrip, title)
-
-    return nGridSize
+from create_forcing import create_scrip_grid_file, create_T62_remap_file, get_mpas_grid_info, create_scrip_file_MPAS, write_scrip_in_file, create_output_times, get_remapping_data
 
 #-------------------------------------------------------------------------------
 
@@ -196,7 +113,9 @@ def perform_remapping(\
     # create T62 remapping file
     print("create_T62_remap_file")
     scripT62Filename = "remap_grid_T62_tmp.nc"
-    srcGridSize = create_T62_remap_file(scripT62Filename, "T62", dataDirSixHourly)
+    filenames = sorted(glob.glob(dataDirSixHourly+"/t_10/t_10.*.nc"))
+    filenameT62 = filenames[0]
+    srcGridSize = create_T62_remap_file(scripT62Filename, "T62", filenameT62)
 
     # create input scrip file
     print("write_scrip_in_file")
