@@ -10,7 +10,7 @@ def number_of_icebergs(filenameTemplate):
 
     filenames = sorted(glob.glob(filenameTemplate))
 
-    print("nIcebergsStatus, nIcebergs, nIcebergsCell, nIcebergsPhysical")
+    #print("nIcebergsStatus, nIcebergs, nIcebergsCell, nIcebergsPhysical")
 
     nIcebergsPhysicalArray = []
 
@@ -18,7 +18,12 @@ def number_of_icebergs(filenameTemplate):
 
         filein = Dataset(filename,"r")
 
-        nIcebergs = len(filein.dimensions["nIcebergs"])
+        try:
+            nIcebergs = len(filein.dimensions["nIcebergs"])
+        except:
+            nIcebergs = 0
+
+        daysSinceStartOfSim = filein.variables["daysSinceStartOfSim"][0]
 
         try:
             statusIB = filein.variables["statusIB"][0,:]
@@ -41,7 +46,7 @@ def number_of_icebergs(filenameTemplate):
         except:
             nIcebergsPhysical = -1
 
-        print(filename, nIcebergsStatus, nIcebergs, nIcebergsCell, nIcebergsPhysical)
+        print(filename, daysSinceStartOfSim, nIcebergsStatus, nIcebergs, nIcebergsCell, nIcebergsPhysical)
 
         filein.close()
 

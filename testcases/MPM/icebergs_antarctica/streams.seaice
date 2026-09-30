@@ -42,6 +42,8 @@
         clobber_mode="replace_files"
         output_interval="none" >
 
+        <var name="xtime"/>
+        <var name="daysSinceStartOfSim"/>
         <var name="statusIB"/>
         <var name="iCellIB"/>
         <var name="cellIDCreationIB"/>
@@ -79,6 +81,8 @@
         clobber_mode="replace_files"
         output_interval="00-00-01_00:00:00" >
 
+        <var name="xtime"/>
+        <var name="daysSinceStartOfSim"/>
         <var name="statusIB"/>
         <var name="icebergID"/>
         <var name="latIceberg"/>
@@ -88,6 +92,7 @@
         <var name="icebergVolume"/>
         <var name="icebergAge"/>
         <var name="icebergSpeed"/>
+        <var name="nIcebergsCell"/>
 </stream>
 
 <stream name="icebergsCalving"

@@ -136,6 +136,7 @@
     config_iceberg_area_pdf_exponent_sampling = -1.5
     config_iceberg_initial_length_to_width_ratio = 1.5
     config_create_icebergs_during_simulation = true
+    config_iceberg_prefill_reservoirs = true
     config_iceberg_generation_type = "category"
     config_iceberg_use_surface_wave_ablation = true
     config_iceberg_use_bouyant_convection_ablation = true
